@@ -21,3 +21,9 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+
+# Elastic Beanstalk local deployment archives
+.elasticbeanstalk/app_versions/
+
+
