@@ -32,6 +32,7 @@ A machine-learning API that estimates the probability that a prospective custome
 <p align="center">
   <a href="#quick-start">Quick start</a> ·
   <a href="#api-reference">API reference</a> ·
+  <a href="#marketing-client">Marketing client</a> ·
   <a href="#docker">Docker</a> ·
   <a href="#aws-deployment-record">AWS deployment</a>
 </p>
@@ -56,6 +57,7 @@ A machine-learning API that estimates the probability that a prospective custome
   - [Request example](#request-example)
   - [Response example](#response-example)
   - [Input validation](#input-validation)
+- [Marketing client](#marketing-client)
 - [Run locally](#run-locally)
 - [Docker](#docker)
 - [Retrain the model](#retrain-the-model)
@@ -144,6 +146,7 @@ A probability is a model estimate, not a guarantee that a lead will convert.
 | FastAPI | REST API framework |
 | Pydantic | Request and response validation |
 | Uvicorn | ASGI server |
+| Requests | HTTP client used by the marketing script to call the API |
 | uv | Python dependency and environment management |
 | Docker | Containerization |
 | AWS Elastic Beanstalk | Cloud deployment exercise |
@@ -160,6 +163,7 @@ A probability is a model estimate, not a guarantee that a lead will convert.
 ├── Lead_Scoring_1.ipynb    # Exploration, model development, and evaluation
 ├── data-week-3-lead.csv    # Training dataset
 ├── model.bin               # Trained scikit-learn pipeline (C=5)
+├── marketing.py             # Client script: call the API and suggest a follow-up action
 ├── predict.py              # FastAPI application and prediction endpoint
 ├── pyproject.toml           # Project metadata and dependencies
 ├── train.py                 # Data preparation, training, and serialization
@@ -228,6 +232,45 @@ Numeric inputs must be non-negative. Non-finite values are rejected for `annual_
 
 Submitting an unsupported category such as `"lead_source": "website"` returns HTTP `422 Unprocessable Entity` because `website` is not an allowed `Literal` value.
 </details>
+
+## Marketing client
+
+The `marketing.py` script demonstrates how another application or business workflow can consume the prediction API.
+
+It:
+1. Sends a sample lead to `POST /predict` using the `requests` library.
+2. Reads the API response, including `converted_probability` and `converted`.
+3. Prints a suggested next step:
+   - If `converted` is `true`, prioritize the lead for sales follow-up.
+   - If `converted` is `false`, add the lead to a nurturing campaign.
+
+> [!NOTE]
+> This is a simple decision-flow demonstration. It prints a suggested action; it does **not** actually send an email, contact a sales team, or create a marketing campaign.
+
+### Run the marketing client locally
+
+First, start the FastAPI service locally as described in [Run locally](#run-locally). Since the previous AWS Elastic Beanstalk environment was terminated, use the local URL in `marketing.py` while testing:
+
+```python
+# Local API
+url = 'http://localhost:9696/predict'
+
+# The old AWS URL is kept in marketing.py as a reference,
+# but that environment is no longer active.
+```
+
+Then, in a second terminal, run:
+
+```bash
+uv sync --locked
+uv run python marketing.py
+```
+
+The script sends the sample lead to your local API and prints the prediction response and suggested action. The `requests` dependency is declared in `pyproject.toml` and locked in `uv.lock`.
+
+If you deploy the API again, replace the local URL with the new active deployment URL before running the script against AWS.
+
+---
 
 ## Run locally
 
