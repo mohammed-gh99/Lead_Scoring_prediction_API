@@ -1086,6 +1086,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "numpy" },
     { name = "pandas" },
+    { name = "requests" },
     { name = "scikit-learn" },
     { name = "uvicorn" },
 ]
@@ -1104,6 +1105,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.162.2" },
     { name = "numpy", specifier = ">=2.5.4" },
     { name = "pandas", specifier = ">=3.1.1" },
+    { name = "requests", specifier = ">=2.32.0" },
     { name = "scikit-learn", specifier = ">=1.9.1" },
     { name = "uvicorn", specifier = ">=0.54.0" },
 ]
