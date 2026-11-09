@@ -1,0 +1,12 @@
+
+.git
+.venv
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+*.ipynb
+data-week-3-lead.csv
+train.py
+README.md
+.env
+.env.*
